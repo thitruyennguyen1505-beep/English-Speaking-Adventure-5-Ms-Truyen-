@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>English Speaking Adventure 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eaf6ff;--ink:#12304a;--card:#fff;--b:#1f7ae0;--g:#1fa85a;--o:#ff8a1f;--y:#ffd23f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme=light]){}@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f2236;--ink:#e8f4ff;--card:#1a3550}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.5 Nunito,system-ui,sans-serif}
+h1,h2,h3{font-family:Fredoka,sans-serif;margin:.3em 0}
+nav{display:flex;flex-wrap:wrap;gap:4px;padding:8px;background:var(--b);position:sticky;top:0;z-index:5}
+nav button{background:#fff;color:#0d4a9a}
+button,select,textarea{font:inherit;font-weight:700}
+button{border:0;border-radius:14px;padding:10px 14px;margin:3px;background:var(--b);color:#fff;min-height:44px;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+button:active{transform:translateY(2px)}button:focus-visible,select:focus-visible{outline:4px solid var(--y)}
+button.g{background:var(--g)}button.o{background:var(--o)}button.on{outline:4px solid var(--y)}
+main{max-width:1000px;margin:auto;padding:12px}
+.card{background:var(--card);border-radius:20px;padding:16px;margin:10px 0;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.hero{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;background:linear-gradient(135deg,#0096f0,#4338ca);color:#fff;border-radius:26px;padding:22px}
+.owl{font-size:96px;line-height:1}.sun{font-size:110px;line-height:1;filter:drop-shadow(0 0 14px #ffd23f)}.bub{background:#fff;color:#12304a;border-radius:18px;padding:10px 14px}input.t{font:inherit;font-weight:700;border:2px solid var(--b);border-radius:12px;padding:8px;margin:3px;min-height:44px;max-width:100%}@media(max-width:560px){.hero{grid-template-columns:1fr;text-align:center}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.node{display:block;width:100%;text-align:left;margin:0;background:var(--card);color:var(--ink);border-radius:18px;border-left:10px solid var(--k,#1f7ae0);min-height:84px}.node.done{background:#cdf3dc;color:#0b3}.node.na{opacity:.75;border-left-style:dashed}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.opts button{background:var(--card);color:var(--ink);border:3px solid var(--b);font-size:20px}
+.ok{background:#bff0cf!important}.no{background:#ffc9c2!important}
+.big{font-size:84px;text-align:center}.w{font:600 42px Fredoka;text-align:center}
+.bar{height:14px;border-radius:8px;background:#0002;overflow:hidden}.bar i{display:block;height:100%;background:var(--g)}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-bottom:2px dashed #0002;padding:6px 0}.row>span{flex:1;min-width:150px}.res{width:100%;font-size:15px}
+.ln{padding:8px 12px;border-radius:14px;margin:6px 0;background:#d9ecff;color:#012}.ln.B{background:#ffe8cc;margin-left:20px}
+textarea{width:100%;min-height:200px;border-radius:12px;padding:10px;border:2px solid var(--b);background:var(--card);color:var(--ink)}
+.warn{background:#fff3c4;color:#4a3500;border-radius:14px;padding:10px}small,.vi{opacity:.85}.pr{display:none}
+@media print{nav,#app>*:not(.pr){display:none!important}.pr{display:block!important}body{background:#fff;color:#000}.pc{border:2px dashed #000;padding:10px;margin:8px;break-inside:avoid}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<nav id="nav"></nav><main id="app"></main>
+<script>
+// ===== CẤU TRÚC (tiêu đề Unit 1–9 lấy từ kết quả tìm kiếm trên web, KHÔNG phải từ sách; Unit 10–20 chưa xác minh)
+const T={1:"All about me!",2:"Our homes",3:"My foreign friends",4:"Our free-time activities",5:"My future job",6:"Our school rooms",7:"Our favourite school activities",8:"In our classroom",9:"Our outdoor activities",10:"Our school trip"};
+const ALL=[];for(let i=1;i<=20;i++){ALL.push({id:"u"+i,n:i,t:T[i]||"Unit "+i,ok:!!T[i]});if(i%5==0)ALL.push({id:"r"+i/5,n:"R",t:"Review "+i/5,ok:false})}
+ALL.unshift({id:"demo",n:"✨",t:"Demo Unit (nội dung mẫu, không thuộc sách)",ok:true,demo:1});
+// ===== NỘI DUNG GIÁO VIÊN: định dạng  V: en|vi|emoji   P: câu mẫu   A: lời thoại A   B: lời thoại B
+const DEMO="V: school|trường học|🏫\nV: friend|bạn bè|🧑‍🤝‍🧑\nV: book|quyển sách|📘\nV: park|công viên|🏞️\nV: pizza|bánh pizza|🍕\nP: I like pizza.\nP: Do you like books?\nA: Do you like pizza?\nB: Yes, I do.\nA: Do you like books?\nB: No, I don't.";
+let P={raw:{},best:{},done:{},att:{},words:{},lv:1,last:null};
+try{P=Object.assign(P,JSON.parse(localStorage.getItem("esa5")||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem("esa5",JSON.stringify(P))}catch(e){toast("Không lưu được tiến độ trên trình duyệt này.")}};
+// Nội dung dựng sẵn Unit 1–9: do Claude tự soạn theo tên chủ điểm, KHÔNG chép từ sách. Giáo viên đối chiếu và sửa ở mục Teacher.
+const BASE={
+u1:`V: address|địa chỉ|🏠
+V: street|đường phố|🛣️
+V: village|làng|🏘️
+V: city|thành phố|🏙️
+V: from|đến từ|🌍
+V: flat|căn hộ|🏢
+P: What's your address?
+P: It's 25 Le Loi Street.
+P: Where are you from?
+A: Hello. What's your name?
+B: My name's Nam.
+A: Where are you from?
+B: I'm from Hue.
+A: What's your address?
+B: It's 25 Le Loi Street.`,
+u2:`V: living room|phòng khách|🛋️
+V: bedroom|phòng ngủ|🛏️
+V: kitchen|nhà bếp|🍳
+V: bathroom|phòng tắm|🛁
+V: garden|khu vườn|🌳
+V: house|ngôi nhà|🏡
+P: Is there a garden?
+P: Yes, there is.
+P: How many rooms are there?
+A: Is there a garden in your house?
+B: Yes, there is.
+A: How many rooms are there?
+B: There are six rooms.
+A: Where is your bedroom?
+B: It's next to the kitchen.`,
+u3:`V: Japan|Nhật Bản|🇯🇵
+V: Australia|Úc|🇦🇺
+V: America|nước Mỹ|🇺🇸
+V: Singapore|Xin-ga-po|🇸🇬
+V: friend|bạn bè|🧑‍🤝‍🧑
+V: speak|nói|🗣️
+P: Who's that?
+P: Is he from Japan?
+P: Yes, he is.
+A: Who's that boy?
+B: He's my friend, Tom.
+A: Where is he from?
+B: He's from Australia.
+A: Is he from America?
+B: No, he isn't.`,
+u4:`V: watch TV|xem ti vi|📺
+V: read comics|đọc truyện tranh|📚
+V: listen to music|nghe nhạc|🎵
+V: play badminton|chơi cầu lông|🏸
+V: surf the Internet|lướt mạng|💻
+V: go shopping|đi mua sắm|🛍️
+P: What do you do in your free time?
+P: I read comics.
+P: How often do you watch TV?
+A: What do you do in your free time?
+B: I listen to music.
+A: How often do you listen to music?
+B: Every day.
+A: Do you play badminton?
+B: Yes, I do.`,
+u5:`V: doctor|bác sĩ|👩‍⚕️
+V: teacher|giáo viên|👩‍🏫
+V: farmer|nông dân|👨‍🌾
+V: pilot|phi công|🧑‍✈️
+V: nurse|y tá|🧑‍⚕️
+V: engineer|kỹ sư|👷
+P: What do you want to be?
+P: I want to be a pilot.
+P: Why do you want to be a pilot?
+A: What do you want to be?
+B: I want to be a pilot.
+A: Why do you want to be a pilot?
+B: Because I want to fly.
+A: That's a great job!
+B: Thank you.`,
+u6:`V: library|thư viện|📚
+V: gym|phòng thể dục|🏋️
+V: music room|phòng âm nhạc|🎶
+V: computer room|phòng máy tính|🖥️
+V: playground|sân chơi|🛝
+V: art room|phòng mỹ thuật|🎨
+P: Where were you yesterday afternoon?
+P: I was in the library.
+P: What did you do there?
+A: Where were you yesterday afternoon?
+B: I was in the library.
+A: What did you do there?
+B: I read books.
+A: Did you like it?
+B: Yes, I did.`,
+u7:`V: draw pictures|vẽ tranh|🖍️
+V: sing songs|hát|🎤
+V: play football|chơi bóng đá|⚽
+V: do exercise|tập thể dục|🤸
+V: read books|đọc sách|📖
+V: plant trees|trồng cây|🌱
+P: What do you like doing at school?
+P: I like singing songs.
+P: Why do you like it?
+A: What do you like doing at school?
+B: I like drawing pictures.
+A: Why do you like it?
+B: Because it's fun.
+A: Let's draw together!
+B: Great idea!`,
+u8:`V: Maths|môn Toán|➕
+V: Science|môn Khoa học|🔬
+V: English|môn Tiếng Anh|🔤
+V: Music|môn Âm nhạc|🎵
+V: PE|môn Thể dục|🏃
+V: Art|môn Mỹ thuật|🎨
+P: What subjects do you have today?
+P: I have Maths and Science.
+P: What's your favourite subject?
+A: What subjects do you have today?
+B: I have Maths and English.
+A: What's your favourite subject?
+B: My favourite subject is Art.
+A: Why do you like Art?
+B: Because I like drawing.`,
+u9:`V: go camping|đi cắm trại|⛺
+V: fly a kite|thả diều|🪁
+V: ride a bike|đạp xe|🚲
+V: have a picnic|đi dã ngoại|🧺
+V: go fishing|đi câu cá|🎣
+V: play in the park|chơi ở công viên|🏞️
+P: What do you do at the weekend?
+P: I ride my bike.
+P: Why do you like it?
+A: What do you do at the weekend?
+B: I fly a kite in the park.
+A: Do you like it?
+B: Yes, I do. It's fun.
+A: Let's go together!
+B: OK. See you on Saturday.`};
+// Unit 1: từ vựng và mẫu câu đối chiếu với tài liệu tham khảo Global Success 5 (hoatieu.vn); lời thoại do Claude soạn. Unit 2–9 trước đó là bản tự soạn chưa khớp sách nên đã tắt.
+const U1=`V: city|thành phố|🏙️
+V: countryside|nông thôn|🌾
+V: class|lớp học|🏫
+V: favourite|yêu thích|⭐
+V: colour|màu sắc|🎨
+V: swimming|bơi lội|🏊
+V: table tennis|bóng bàn|🏓
+V: basketball|bóng rổ|🏀
+V: dolphin|cá heo|🐬
+V: panda|gấu trúc|🐼
+V: sandwich|bánh mì kẹp|🥪
+P: Can you tell me about yourself?
+P: My name is Lina. I'm in Class 5A.
+P: I live in the city.
+P: My birthday is in April.
+P: What's your favourite colour?
+P: It's blue.
+P: What's his favourite sport?
+P: It's table tennis.
+A: Can you tell me about yourself?
+B: My name is Lina. I'm in Class 5A. I live in the city.
+A: What's your favourite colour?
+B: It's blue.
+A: What's your favourite animal?
+B: It's a dolphin.`;
+// Unit 1–10: từ vựng và mẫu câu theo SGK Tiếng Anh 5 Global Success tập 1 (Book map + Wordlist); lời thoại rút gọn từ ví dụ trong sách.
+const BOOK={
+u1:`V: city|thành phố|🏙️
+V: countryside|nông thôn|🌾
+V: class|lớp học|🏫
+V: dolphin|cá heo|🐬
+V: pink|màu hồng|🩷
+V: sandwich|bánh mì kẹp|🥪
+V: table tennis|bóng bàn|🏓
+V: basketball|bóng rổ|🏀
+P: Can you tell me about yourself?
+P: I'm in Class 5A.
+P: I live in the city.
+P: What's your favourite colour?
+P: It's pink.
+A: Hello. I'm Ben. Nice to meet you.
+B: Hello, Ben. I'm Lan. Nice to meet you, too.
+A: Can you tell me about yourself, Lan?
+B: Well, I'm in Class 5C. I live in the countryside.
+A: What's your favourite sport?
+B: It's table tennis.`,
+u2:`V: building|toà nhà|🏢
+V: flat|căn hộ|🚪
+V: house|ngôi nhà|🏡
+V: tower|toà tháp|🗼
+V: street|đường phố|🛣️
+V: fifteen|mười lăm|15
+V: sixteen|mười sáu|16
+P: Do you live in this building?
+P: Yes, I do. / No, I don't.
+P: What's your address?
+P: It's 45 Ba Trieu Street.
+A: Do you live in this building?
+B: Yes, I do. I live in that flat.
+A: Do you live near the school?
+B: Yes, I do.
+A: What's your address?
+B: It's 45 Ba Trieu Street.`,
+u3:`V: American|người Mỹ|🇺🇸
+V: Australian|người Úc|🇦🇺
+V: Japanese|người Nhật|🇯🇵
+V: Malaysian|người Ma-lai-xi-a|🇲🇾
+V: active|năng động|🏃
+V: clever|thông minh|🧠
+V: friendly|thân thiện|🤝
+V: helpful|hay giúp đỡ|🙌
+P: What nationality is he?
+P: He's Australian.
+P: What's she like?
+P: She's friendly.
+A: Mum, I have a new foreign friend.
+B: Do you? Where's he from?
+A: He's from Australia.
+B: What's he like?
+A: He's friendly and clever.`,
+u4:`V: play the violin|chơi vi-ô-lông|🎻
+V: surf the Internet|lướt mạng|💻
+V: go for a walk|đi dạo bộ|🚶
+V: water the flowers|tưới hoa|🌷
+V: always|luôn luôn|✅
+V: usually|thường thường|📅
+V: often|hay, thường|🔁
+V: sometimes|thỉnh thoảng|🌦️
+V: never|không bao giờ|🚫
+P: What do you like doing in your free time?
+P: I like playing the violin.
+P: What do you do at the weekend?
+P: I usually listen to music.
+A: What do you like doing in your free time?
+B: I like playing the violin.
+A: What do you do at the weekend?
+B: I often play table tennis.`,
+u5:`V: firefighter|lính cứu hoả|🧑‍🚒
+V: gardener|người làm vườn|🧑‍🌾
+V: reporter|phóng viên|🎤
+V: writer|nhà văn|✍️
+V: teacher|giáo viên|👩‍🏫
+V: dentist|nha sĩ|🦷
+V: doctor|bác sĩ|🩺
+P: What would you like to be in the future?
+P: I'd like to be a doctor.
+P: Why would you like to be a doctor?
+P: Because I'd like to help people.
+A: That's my father.
+B: What's his job?
+A: He's a doctor.
+B: What would you like to be in the future?
+A: I'd like to be a doctor, too.
+B: Why would you like to be a doctor?
+A: Because I'd like to help people.`,
+u6:`V: ground floor|tầng trệt|🏢
+V: first floor|tầng một|1️⃣
+V: second floor|tầng hai|2️⃣
+V: third floor|tầng ba|3️⃣
+V: library|thư viện|📚
+V: computer room|phòng máy tính|🖥️
+V: art room|phòng mỹ thuật|🎨
+V: music room|phòng âm nhạc|🎶
+V: go upstairs|lên gác|⬆️
+V: go downstairs|xuống gác|⬇️
+P: Where's the library?
+P: It's on the second floor.
+P: Could you tell me the way to the computer room, please?
+P: Go upstairs.
+A: Where's the library?
+B: It's on the second floor.
+A: Could you tell me the way to the computer room, please?
+B: Go upstairs. It's on the first floor.
+A: Thank you.
+B: You're welcome.`,
+u7:`V: do projects|làm dự án|📋
+V: play games|chơi trò chơi|🎲
+V: read books|đọc sách|📖
+V: solve maths problems|giải toán|➗
+V: fun|vui|😄
+V: interesting|thú vị|✨
+V: useful|hữu ích|🛠️
+V: good for group work|tốt cho làm việc nhóm|👥
+P: What school activity does he like?
+P: He likes reading books.
+P: Why does he like solving maths problems?
+P: Because he thinks it's useful.
+A: What school activity does he like?
+B: He likes solving maths problems.
+A: Why does he like solving maths problems?
+B: Because he thinks it's useful.`,
+u8:`V: above|ở phía trên|⬆️
+V: beside|bên cạnh|↔️
+V: in front of|ở phía trước|➡️
+V: under|ở dưới|⬇️
+V: crayon|bút sáp màu|🖍️
+V: glue stick|hồ dán khô|🧴
+V: pencil sharpener|gọt bút chì|✏️
+V: set square|thước ê-ke|📐
+P: Where are the maps?
+P: They're beside the board.
+P: Whose crayon is this?
+P: It's Linh's.
+A: Where are the maps?
+B: They're beside the board.
+A: Excuse me, is this your crayon?
+B: No, it isn't.
+A: Whose crayon is this?
+B: It's Linh's.`,
+u9:`V: aquarium|thuỷ cung|🐠
+V: campsite|điểm cắm trại|⛺
+V: funfair|hội chợ giải trí|🎡
+V: theatre|nhà hát|🎭
+V: dance around the campfire|nhảy quanh lửa trại|🔥
+V: listen to music|nghe nhạc|🎧
+V: play chess|chơi cờ vua|♟️
+V: watch the fish|ngắm cá|🐟
+P: Were you at the campsite yesterday?
+P: Yes, we were. / No, we weren't.
+P: What did you do yesterday?
+P: We played chess.
+A: Where were you yesterday?
+B: I was at home.
+A: Were all your family at home?
+B: Yes, we were. We listened to music.`,
+u10:`V: Ba Na Hills|Bà Nà Hills|⛰️
+V: Bai Dinh Pagoda|chùa Bái Đính|🛕
+V: Hoan Kiem Lake|Hồ Hoàn Kiếm|🏞️
+V: Suoi Tien Theme Park|Công viên Suối Tiên|🎢
+V: plant trees|trồng cây|🌳
+V: play games|chơi trò chơi|🎲
+V: visit the old buildings|thăm các toà nhà cổ|🏛️
+V: walk around the lake|đi dạo quanh hồ|🚶
+P: Did they go to Ba Na Hills?
+P: Yes, they did. / No, they didn't.
+P: What did they do there?
+P: They visited the old buildings.
+A: How was your school trip last weekend?
+B: It was great! We went to Da Nang.
+A: Did Nam and Mai go with you?
+B: Yes, they did.
+A: What did they do there?
+B: They visited the buildings.`};
+const rawOf=id=>id==="demo"?DEMO:(P.raw[id]||BOOK[id]||"");
+function parse(raw){const c={v:[],p:[],d:[]};raw.split("\n").forEach(l=>{const m=l.match(/^\s*([VPAB]):\s*(.+)$/);if(!m)return;const x=m[2].trim();if(m[1]==="V"){const[a,b,e]=x.split("|");if(a)c.v.push({en:a.trim(),vi:(b||"").trim(),pic:(e||"").trim()})}else if(m[1]==="P")c.p.push(x);else c.d.push({s:m[1],t:x})});return c}
+const C=id=>parse(rawOf(id));
+// ===== ÂM THANH, NÓI, GHI ÂM
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const SS=window.speechSynthesis,SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function toast(m){let t=document.getElementById("toast");if(!t){t=document.createElement("div");t.id="toast";t.setAttribute("role","status");t.style.cssText="position:fixed;left:10px;right:10px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:#12304a;color:#fff;padding:12px;border-radius:14px;z-index:9;text-align:center";document.body.appendChild(t)}t.textContent=m;t.style.display="block";clearTimeout(t._x);t._x=setTimeout(()=>t.style.display="none",3800)}
+function say(t,r=.9,cb){if(!SS){toast("Trình duyệt chưa hỗ trợ phát âm. Hãy dùng Chrome, Edge hoặc Safari.");return}SS.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=r;const v=SS.getVoices().find(v=>/^en[-_]US/i.test(v.lang))||SS.getVoices().find(v=>/^en/i.test(v.lang));if(v)u.voice=v;u.onend=()=>cb&&cb();u.onerror=()=>{toast("Không phát được âm thanh.");cb&&cb()};SS.speak(u)}
+const stop=()=>SS&&SS.cancel();
+const norm=s=>s.toLowerCase().replace(/[^a-z' ]/g,"").split(/\s+/).filter(Boolean);
+const spk=(t)=>`<button data-t="${esc(t)}" onclick="say(this.dataset.t)" aria-label="Nghe">🔊</button><button data-t="${esc(t)}" onclick="say(this.dataset.t,.5)" aria-label="Nghe chậm">🐢</button><button data-t="${esc(t)}" onclick="stop()" aria-label="Dừng">⏹</button>`;
+function rec(btn){const t=btn.dataset.t,box=btn.closest(".row,.card"),out=box.querySelector(".res");
+ if(!navigator.mediaDevices||!window.MediaRecorder){out.innerHTML="⚠️ Trình duyệt chưa hỗ trợ ghi âm. Hãy nghe mẫu, đọc to, rồi dùng bảng tự kiểm tra bên dưới hoặc nhờ giáo viên nghe.";}
+ const r=SR?new SR():null;let heard="",chunks=[],mr,stream;
+ const finish=()=>{if(r&&heard){const a=norm(t),b=norm(heard),sc=a.filter(w=>b.includes(w)).length/a.length;out.innerHTML+=`<br>Máy nhận diện: <b>“${esc(heard)}”</b><br>${sc>=.8?"🌟 Rất tốt! Các từ khớp với câu mẫu.":sc>=.4?"👍 Gần đúng. Nghe mẫu và thử lại nhé!":"💪 Chưa khớp. Nghe mẫu chậm rồi thử lại."}<br><small>Đây là so sánh chữ nhận diện được, không phải chấm điểm phát âm.</small>`;if(sc>=.8)P.words[t.toLowerCase()]=1}else if(!r)out.innerHTML+="<br>Trình duyệt không có nhận diện giọng nói: hãy nghe lại bản ghi và tự kiểm tra.";P.att[U]=(P.att[U]||0)+1;save()};
+ navigator.mediaDevices&&navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{stream=s;out.innerHTML="🎤 Đang ghi âm... bấm lại nút để dừng.";if(window.MediaRecorder){mr=new MediaRecorder(s);mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{s.getTracks().forEach(x=>x.stop());const a=document.createElement("audio");a.controls=true;a.src=URL.createObjectURL(new Blob(chunks));out.innerHTML="▶ Nghe lại giọng của em (chỉ lưu tạm trong trình duyệt, không gửi đi):<br>";out.appendChild(a);finish()};mr.start()}
+  if(r){r.lang="en-US";r.onresult=e=>{heard=e.results[0][0].transcript};r.onend=()=>{if(mr&&mr.state==="recording")mr.stop()};r.onerror=()=>{};try{r.start()}catch(e){}}
+  btn.onclick=()=>{if(mr&&mr.state==="recording")mr.stop();if(r)try{r.stop()}catch(e){};btn.onclick=()=>rec(btn)}}).catch(e=>{out.textContent=e.name==="NotAllowedError"?"🚫 Chưa cho phép micro. Hãy bật quyền micro cho trang web rồi thử lại.":e.name==="NotFoundError"?"Không tìm thấy micro trên thiết bị.":"Không mở được micro ("+e.name+")."})}
+// ===== ĐIỀU HƯỚNG
+let V="home",U=null,ST="warm",ci=0,role=null,hint={},Q=null,TU="demo";
+function go(v,u,st){V=v;if(u)U=u;if(st)ST=st;ci=0;role=null;hint={};Q=null;stop();if(v==="unit"){P.last=U;save()}render();scrollTo(0,0)}
+const nDone=()=>Object.keys(P.done).length,uid=id=>ALL.find(u=>u.id===id);
+function render(){nav.innerHTML=`<button class="${V==='home'?'on':''}" onclick="go('home')">📖 Trang chủ</button><button class="${V==='map'?'on':''}" onclick="go('map')">🧭 Hành trình</button><button onclick="go('unit',su().id,'listen')">🎧 Luyện nghe</button><button class="${V==='sunny'?'on':''}" onclick="go('sunny')">🌞 Sunny</button><button onclick="go('unit',su().id,'chal')">🏅 Thử thách</button><button class="${V==='prog'?'on':''}" onclick="go('prog')">📒 Sổ theo dõi</button><button class="${V==='teach'?'on':''}" onclick="go('teach')">🎓 Giáo viên</button>${P.last?`<button class="o" onclick="go('unit','${P.last}')">▶ Tiếp tục</button>`:""}`;app.innerHTML=({home,map,prog,teach,sunny:sunnyV,unit:unitV})[V]()}
+const stars=()=>Object.values(P.best).reduce((s,b)=>s+(b>=90?3:b>=70?2:b>0?1:0),0);
+const su=()=>ALL.find(x=>x.id===P.last&&C(x.id).v.length)||ALL.find(x=>x.id!=="demo"&&C(x.id).v.length)||ALL[0];
+const sunnyHi=()=>`Hi${P.name?" "+P.name:""}! Welcome to the adventure! Today let's learn ${su().t}. Are you ready to speak English with me?`;
+function sunnyV(){const u=su();U=u.id;const c=C(u.id),A=c.d.filter(l=>l.s==="A"),a=A[ci%(A.length||1)],r=a&&c.d[c.d.indexOf(a)+1],t=r?r.t:"";
+return`<h2>🌞 Sunny</h2><div class="card"><div class="row"><span class="sun" style="font-size:64px;flex:none;min-width:0">🌞</span><span class="bub" style="background:#d9ecff"><b>Sunny:</b> ${esc(sunnyHi())}</span><button class="o" onclick="say(sunnyHi())">🔊</button></div><small>Sunny nói theo kịch bản soạn sẵn từ nội dung bài, không phải AI trả lời tự do.</small></div>
+<div class="card"><label>Bài luyện cùng Sunny: <select onchange="P.last=this.value;save();ci=0;render()">${ALL.filter(x=>C(x.id).v.length).map(x=>`<option value="${x.id}" ${x.id===u.id?"selected":""}>${esc(x.n+" "+x.t)}</option>`).join("")}</select></label>
+${a?`<h3>Sunny hỏi em:</h3><div class="ln"><b>${esc(a.t)}</b></div><div class="row"><button class="o" data-t="${esc(a.t)}" onclick="say(this.dataset.t)">🔊 Sunny hỏi</button><button class="g" data-t="${esc(t)}" onclick="rec(this)">🎤 Em trả lời</button><button data-t="${esc(t)}" onclick="say(this.dataset.t)">💡 Nghe câu mẫu</button><button onclick="ci++;render()">Câu khác ▶</button><div class="res"></div></div><p>${P.lv<2?"Gợi ý: <b>"+esc(t)+"</b>":"Thử nói không nhìn gợi ý nhé!"}</p>`:"<p>Bài này chưa có hội thoại.</p>"}<button class="o" onclick="go('unit','${u.id}')">▶ Học bài này</button></div>`}
+const LV=["🧭 Explorer","🏕️ Adventurer","🏆 Champion"];
+const lvBar=()=>`<div>${LV.map((l,i)=>`<button class="${P.lv===i?"on":""}" onclick="P.lv=${i};save();Q=null;render()">${l}</button>`).join("")}</div>`;
+function home(){return`<div class="hero"><div style="text-align:center"><div class="sun">🌞</div><div class="bub">Hi! I'm Sunny.</div></div><div><h1>ENGLISH SPEAKING ADVENTURE 5</h1><p>Global Success · Listen • Speak • Practice • Explore<br>Xin chào! Mình là Sunny. Cùng khám phá và luyện nói tiếng Anh nhé!</p><button class="o" style="font-size:20px" onclick="go('unit','${P.last||"demo"}')">▶ Start Learning</button><button onclick="go('map')">🗺️ Bản đồ</button></div></div>
+<div class="card" style="background:#ffd23f;color:#3a2a00"><b>${P.name?`👤 ${esc(P.name)}${P.cls?" · Lớp "+esc(P.cls):""} · ⭐ ${stars()} ngôi sao`:"CHƯA ĐIỀN TÊN HỌC SINH: em hãy ghi họ tên và lớp nhé!"}</b><br><input class="t" id="nm" placeholder="Họ và tên" value="${esc(P.name||"")}"><input class="t" id="cl" placeholder="Lớp" size="6" value="${esc(P.cls||"")}"><button class="o" onclick="P.name=nm.value.trim();P.cls=cl.value.trim();save();render()">Lưu</button></div>
+<div class="card"><div class="row"><span class="sun" style="font-size:56px;flex:none;min-width:0">🌞</span><span><b>Sunny nói:</b> ${esc(sunnyHi())}</span><button class="o" onclick="say(sunnyHi())">🔊</button><button onclick="go('sunny')">Luyện cùng Sunny</button></div></div>
+<div class="card"><h3>Chọn mức hỗ trợ</h3>${lvBar()}<small>Explorer: 2 đáp án + gợi ý tiếng Việt · Adventurer: 3 đáp án · Champion: 4 đáp án, ít gợi ý.</small></div>
+<div class="card warn"><b>Lưu ý cho giáo viên:</b> Trang này <b>không chép nội dung từ sách</b>. Unit 1–10 (tập 1) đã có từ vựng và mẫu câu lấy từ SGK Tiếng Anh 5 Global Success bạn tải lên; hội thoại rút gọn từ ví dụ trong sách. Unit 11–20 (tập 2) và các bài Review chưa có, giáo viên nhập ở mục <b>Teacher</b>. Mọi hoạt động tự tạo từ nội dung đã nhập.</div>
+<div class="card"><p>✅ ${nDone()} bài hoàn thành · tiến độ chỉ lưu trên thiết bị này.</p><div class="bar"><i style="width:${nDone()/ALL.length*100}%"></i></div></div>`}
+function map(){return`<h2>🗺️ Learning Adventure Map</h2><div class="grid">${ALL.map((u,i)=>{const has=C(u.id).v.length>0;return`<button class="node ${P.done[u.id]?"done":""} ${has?"":"na"}" style="--k:hsl(${(i*37)%360} 70% 45%)" onclick="go('unit','${u.id}')"><b>${u.n==="R"||u.n==="✨"?"":"Unit "}${u.n}</b> ${esc(u.t)}<br><small>${has?"Có nội dung":"Chờ giáo viên nhập"}${u.ok?"":" · tên chưa xác minh"}</small>${P.done[u.id]?" ✅":""}</button>`}).join("")}</div>`}
+const STG=[["warm","A · Warm-up"],["vocab","B · Vocabulary"],["listen","C · Listen & Repeat"],["guide","D · Guided Speaking"],["adv","E · Adventure"],["chal","F · Challenge"],["fin","G · Mission Complete"]];
+function unitV(){const u=uid(U),c=C(U);let h=`<h2>${u.n} ${esc(u.t)}</h2>${lvBar()}<div>${STG.map(s=>`<button class="${ST===s[0]?"on":""}" onclick="go('unit',null,'${s[0]}')">${s[1]}</button>`).join("")}</div>`;
+ if(!c.v.length)return h+`<div class="card"><h3>Chưa có nội dung cho bài này</h3><p>Giáo viên hãy nhập từ vựng, mẫu câu và hội thoại từ sách trong mục Teacher.</p><button class="o" onclick="TU='${U}';go('teach')">Mở trình soạn nội dung</button></div>`;
+ return h+`<div class="card">${({warm,vocab,listen,guide,adv,chal,fin})[ST](c)}</div>`}
+// ===== TẠO CÂU HỎI
+const sh=a=>[...a].sort(()=>Math.random()-.5),nopt=()=>P.lv+2;
+const POOL=()=>ALL.flatMap(u=>C(u.id).v);
+function opts(right,list,key){const ds=sh(list.filter(x=>x[key]!==right[key])).slice(0,nopt()-1);const o=sh([right,...ds]);return{o,c:o.indexOf(right)}}
+function mk(type,c){const qs=[];if(type==="build")return c.p.slice(0,5).map(s=>({build:s}));
+ if(type==="order"){const L=c.d.slice(0,4).map(l=>l.t);return L.length>=3?[{build:L.join(" "),items:L}]:[]}
+ if(type==="next"){c.d.slice(0,-1).forEach((l,i)=>{if(l.s==="A"){const r=c.d[i+1],pool=c.d.filter(x=>x.s===r.s&&x!==r),ds=sh(pool).slice(0,nopt()-1);if(!ds.length)return;const o=sh([r,...ds]);qs.push({p:"Nghe câu hỏi, chọn lời đáp:",a:l.t,o:o.map(x=>x.t),c:o.indexOf(r)})}});return qs.slice(0,6)}
+ const W=c.v;sh(W).slice(0,6).forEach(w=>{const pool=W.length>=nopt()?W:POOL(),{o,c:k}=opts(w,pool,"en");
+  if(type==="listen")qs.push({p:"Nghe và chọn từ đúng:",a:w.en,o:o.map(x=>x.en),c:k});
+  if(type==="pic"&&w.pic)qs.push({p:"Nghe và chọn hình đúng:",a:w.en,o:o.map(x=>x.pic||"❔"),c:k,big:1});
+  if(type==="match"&&w.pic)qs.push({p:`Chọn từ cho hình <span style="font-size:56px">${w.pic}</span>`,o:o.map(x=>x.en),c:k});
+  if(type==="vi"&&w.vi){const r=opts(w,pool.filter(x=>x.vi),"vi");qs.push({p:`Từ <b>${esc(w.en)}</b> nghĩa là gì?`,a:w.en,o:r.o.map(x=>x.vi),c:r.c})}});return qs}
+const GM=[["listen","🎧 Listen & Choose"],["pic","🖼️ Look & Choose picture"],["match","🧩 Match the Words"],["vi","🇻🇳 Meaning"],["next","💬 Complete the Conversation"],["build","🧱 Build a Sentence"],["order","🔀 Rearrange the Dialogue"]];
+function quiz(c,types){if(!Q)return`<p>Chọn trò chơi (cần từ 70% để tính là đạt):</p>${types.map(t=>GM.find(g=>g[0]===t)).map(g=>`<button class="g" onclick="start('${g[0]}')">${g[1]}</button>`).join("")}`;
+ if(Q.i>=Q.qs.length){const pc=Q.qs.length?Math.round(Q.s/Q.qs.length*100):0;if(!Q.sv){Q.sv=1;P.best[U]=Math.max(P.best[U]||0,pc);save()}return`<div class="card" style="text-align:center"><div class="owl">🦉</div><h3>${pc>=90?"🌟 Tuyệt vời!":pc>=70?"🎉 Giỏi lắm!":"💪 Cố lên, thử lại nào!"}</h3><p>Đúng ${Q.s}/${Q.qs.length} (${pc}%)</p><button class="g" onclick="start('${Q.t}')">🔁 Chơi lại</button><button onclick="Q=null;render()">Trò khác</button></div>`}
+ const q=Q.qs[Q.i];if(!q)return"<p>Chưa đủ nội dung cho trò này (cần thêm từ, hình hoặc hội thoại). Hãy bổ sung ở mục Teacher.</p><button onclick=\"Q=null;render()\">Quay lại</button>";
+ if(q.build)return`<small>Câu ${Q.i+1}/${Q.qs.length}</small><h3>${q.items?"Sắp xếp các câu thành hội thoại đúng":"Bấm các từ theo đúng thứ tự"}</h3><p><b>${esc(Q.cur.map(i=>q.words[i]).join(" "))||"…"}</b></p><div class="opts">${q.sh.filter(i=>!Q.cur.includes(i)).map(i=>`<button onclick="Q.cur.push(${i});render()">${esc(q.words[i])}</button>`).join("")}</div><button onclick="Q.cur=[];render()">↩ Làm lại</button>${Q.cur.length===q.words.length?chkB(q):""}`;
+ return`<small>Câu ${Q.i+1}/${Q.qs.length} · Điểm ${Q.s}</small><h3>${q.p}</h3>${q.a?`<button class="o" data-t="${esc(q.a)}" onclick="say(this.dataset.t)">🔊 Nghe</button><button data-t="${esc(q.a)}" onclick="say(this.dataset.t,.5)">🐢</button>`:""}${P.lv===0&&q.a&&Q.t==="listen"?"":""}<div class="opts">${q.o.map((o,j)=>`<button style="${q.big?"font-size:46px":""}" onclick="ans(${j})">${esc(o)}</button>`).join("")}</div><div id="fb"></div>`}
+function chkB(q){const ok=Q.cur.map(i=>q.words[i]).join(" ")===q.words.join(" ");if(!Q.lock){Q.lock=1;if(ok)Q.s++}return`<h3>${ok?"🎉 Well done!":"🙂 Câu đúng là:"} ${ok?"":esc(q.build)}</h3><button onclick="say('${esc(q.build).replace(/'/g,"\\'")}')">🔊 Nghe câu mẫu</button><button class="o" onclick="Q.i++;Q.cur=[];Q.lock=0;prep();render()">Tiếp ▶</button>`}
+function prep(){const q=Q.qs[Q.i];if(q&&q.build){q.words=q.items||q.build.split(/\s+/);let s=sh(q.words.map((_,i)=>i));if(s.join()===q.words.map((_,i)=>i).join())s.reverse();q.sh=s}}
+function start(t){const c=C(U);Q={t,qs:mk(t,c),i:0,s:0,cur:[],lock:0};prep();render();const q=Q.qs[0];if(q&&q.a)setTimeout(()=>say(q.a),150)}
+function ans(j){if(Q.lock)return;Q.lock=1;const q=Q.qs[Q.i],b=document.querySelectorAll(".opts button");b.forEach((x,k)=>{if(k===q.c)x.classList.add("ok");else if(k===j)x.classList.add("no")});const ok=j===q.c;if(ok&&!Q.tr)Q.s++;if(!ok)Q.tr=1;fb.innerHTML=(ok?`<h3>🎉 ${sh(["Excellent!","Great job!","Well done!"])[0]}</h3>`:`<h3>🙂 Not quite. Đáp án đúng (tô xanh): <b>${esc(q.o[q.c])}</b></h3><button onclick="Q.lock=0;render()">↩ Try again</button>`)+`<button class="o" onclick="Q.i++;Q.lock=0;Q.tr=0;render();const n=Q.qs[Q.i];if(n&&n.a)say(n.a)">Tiếp ▶</button>`}
+// ===== CÁC CHẶNG
+const warm=c=>(Q?"":`<h3>🎯 Learning objectives</h3><p>Em sẽ học <b>${c.v.length}</b> từ vựng, luyện mẫu câu <i>${esc(c.p[0]||"")}</i> và nói được hội thoại ngắn về chủ đề này.</p>`)+quiz(c,["pic","listen"]);
+function vocab(c){const w=c.v[ci%c.v.length];return`<small>Thẻ ${ci%c.v.length+1}/${c.v.length}</small><div class="big">${w.pic||"📝"}</div><div class="w">${esc(w.en)}</div>${P.lv<2&&w.vi?`<p class="vi" style="text-align:center">${esc(w.vi)}</p>`:""}<div style="text-align:center">${spk(w.en)}<br><button onclick="ci--;if(ci<0)ci=${c.v.length-1};render()">◀</button><button class="o" onclick="ci++;render()">Từ tiếp ▶</button></div>${c.p.length?"<h3>Mẫu câu</h3>"+c.p.map(s=>`<div class="row"><span>${esc(s)}</span>${spk(s)}</div>`).join(""):""}`}
+function listen(c){const L=[...c.v.map(w=>w.en),...c.p,...c.d.map(l=>l.t)];return`<p>Nghe cả câu, rồi bấm 🎤 để ghi âm, nghe lại giọng mình và thử lại.</p>${[...new Set(L)].map(t=>`<div class="row"><span>${esc(t)}</span>${spk(t)}<button class="o" data-t="${esc(t)}" onclick="rec(this)" aria-label="Ghi âm">🎤</button><div class="res"></div></div>`).join("")}`}
+const guide=c=>quiz(c,["match","vi","build","next","order"]);
+function adv(c){if(!c.d.length)return"<p>Chưa có hội thoại. Giáo viên nhập các dòng A: và B: ở mục Teacher.</p>";return`<p>🦉 Chọn vai. Ollie sẽ đóng vai còn lại.</p><button class="${role==="A"?"on":""}" onclick="role='A';hint={};render()">Em là A</button><button class="${role==="B"?"on":""}" onclick="role='B';hint={};render()">Em là B</button><button onclick="role=null;render()">Xem cả hai</button><button class="g" onclick="playAll(0)">▶ Nghe cả hội thoại</button>${c.d.map((l,i)=>{const mine=role===l.s;return`<div class="ln ${l.s} row"><b>${l.s}:</b><span>${mine&&!hint[i]&&P.lv>0?"❓ Đến lượt em!":esc(l.t)}</span>${mine?`<button onclick="hint[${i}]=1;render()">💡</button><button class="o" data-t="${esc(l.t)}" onclick="rec(this)">🎤</button>`:`<button data-t="${esc(l.t)}" onclick="say(this.dataset.t)">🔊</button>`}<div class="res"></div></div>`}).join("")}`}
+function playAll(i){const c=C(U);if(i>=c.d.length)return;say(c.d[i].t,.85,()=>setTimeout(()=>playAll(i+1),250))}
+function chal(c){const q=c.d.filter(l=>l.s==="A"),a=q[ci%q.length]||{t:"What's your name?"},r=c.d[c.d.indexOf(a)+1];const t=r?r.t:a.t;return`<h3>Speaking Challenge</h3><p>Ollie hỏi: <b>${esc(a.t)}</b> ${spk(a.t)}</p><p>Em hãy trả lời. ${P.lv<2?"Câu mẫu gợi ý: <b>"+esc(t)+"</b>":"Thử nói không nhìn mẫu nhé!"}</p><div class="row"><button class="o" data-t="${esc(t)}" onclick="rec(this)">🎤 Ghi âm câu trả lời</button><button data-t="${esc(t)}" onclick="say(this.dataset.t)">🔊 Nghe mẫu</button><div class="res"></div></div><h3>Tự kiểm tra</h3>${["I spoke clearly.","I used the correct words.","I used the target sentence pattern.","I answered the question."].map(x=>`<label style="display:block"><input type="checkbox"> ${x}</label>`).join("")}<button onclick="ci++;render()">Câu hỏi khác ▶</button><p><small>Nếu trình duyệt không nhận diện giọng nói, nhờ giáo viên hoặc bạn nghe bản ghi âm và đánh giá.</small></p>`}
+function fin(c){const b=P.best[U]||0,st=b>=90?3:b>=70?2:b>0?1:0;return`<div style="text-align:center"><div class="owl">🦉</div><h3>Mission Complete</h3><p>Điểm game cao nhất: <b>${b}%</b> · ${"⭐".repeat(st)||"Chưa có sao"}</p><p>${b>=70?"Em làm rất tốt! Hãy tự hào nhé!":"Hãy luyện thêm ở chặng B–D rồi chơi lại để lấy sao nhé!"}</p><button class="g" onclick="${b>=70?`P.done['${U}']=1;save();`:""}toast('${b>=70?"Đã đánh dấu hoàn thành!":"Cần đạt 70% ở một trò chơi."}');render()">✅ Hoàn thành bài</button><button onclick="go('unit',null,'guide')">🔁 Luyện lại</button><button class="o" onclick="next()">Bài tiếp ▶</button></div>`}
+function next(){const i=ALL.findIndex(u=>u.id===U);go("unit",ALL[(i+1)%ALL.length].id,"warm")}
+function prog(){const ws=Object.keys(P.words);return`<h2>🏆 Progress</h2><div class="card"><p>Bài hoàn thành: <b>${nDone()}/${ALL.length}</b></p><div class="bar"><i style="width:${nDone()/ALL.length*100}%"></i></div></div><div class="card"><h3>Điểm cao nhất & lượt luyện nói</h3>${ALL.filter(u=>P.best[u.id]!=null||P.att[u.id]).map(u=>`<p>${esc(u.t)}: ${P.best[u.id]??"–"}% · ${P.att[u.id]||0} lần nói</p>`).join("")||"Chưa có dữ liệu."}</div><div class="card"><h3>Từ đã nói khớp (${ws.length})</h3>${ws.map(w=>`<button data-t="${esc(w)}" onclick="say(this.dataset.t)">🔊 ${esc(w)}</button>`).join("")||"Chưa có."}</div><div class="card"><small>Tiến độ lưu trong localStorage của trình duyệt này, không chuyển sang thiết bị khác. Không thu thập thông tin cá nhân; bản ghi âm không được tải lên.</small><br><button class="o" onclick="if(confirm('Xóa toàn bộ tiến độ và nội dung đã nhập?')){localStorage.removeItem('esa5');location.reload()}">Reset Progress</button></div>`}
+function teach(){const c=C(TU),u=uid(TU);return`<h2>👩‍🏫 Teacher Resources</h2><div class="card"><label>Chọn bài: <select onchange="TU=this.value;render()">${ALL.map(x=>`<option value="${x.id}" ${x.id===TU?"selected":""}>${x.n} ${esc(x.t)}</option>`).join("")}</select></label>
+${u.ok?"":`<p class="warn">Tên bài này chưa xác minh với sách. Hãy đối chiếu.</p>`}
+<p><small>Mỗi dòng: <code>V: english|tiếng Việt|emoji</code> · <code>P: mẫu câu</code> · <code>A: lời thoại</code> / <code>B: lời đáp</code>. Chỉ nhập nội dung có trong sách của bạn.</small></p>
+${TU==="demo"?"<p>Demo là nội dung mẫu cố định. Hãy chọn một Unit khác để nhập nội dung thật.</p>":`<textarea id="ta" aria-label="Nội dung bài">${esc(rawOf(TU))}</textarea><br><button class="g" onclick="P.raw[TU]=ta.value;save();toast('Đã lưu trên trình duyệt này.');render()">💾 Lưu nội dung</button>`}
+<button onclick="print()">🖨️ In thẻ hội thoại</button></div>
+<div class="card"><h3>Tổng quan: ${c.v.length} từ · ${c.p.length} mẫu câu · ${c.d.length} lời thoại</h3><p><b>Gợi ý hoạt động:</b> làm việc cặp (A/B đổi vai), hỏi–đáp theo nhóm 4, bốc thăm thẻ từ rồi đặt câu.</p><p><b>Rubric tự lập (không phải tiêu chí chính thức):</b> nói rõ · dùng đúng từ · dùng đúng mẫu câu · trả lời đúng câu hỏi (mỗi tiêu chí 0–2 điểm).</p></div>
+<div class="pr">${c.d.length?`<h2>${esc(u.t)}: Conversation cards</h2>`+c.d.map(l=>`<div class="pc"><b>${l.s}:</b> ${esc(l.t)}</div>`).join(""):""}${c.v.map(w=>`<div class="pc">${w.pic} <b>${esc(w.en)}</b> – ${esc(w.vi)}</div>`).join("")}</div>`}
+render();
+</script></body></html>
